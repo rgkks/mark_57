@@ -29,5 +29,5 @@ Edit `jarvis.env` to set your name, voice, AI model, and API keys.
 ## Requirements
 
 - Python 3.10+
-- Linux (Kali/Ubuntu)
+- Linux (Kali/Ubuntu/Mint)
 - Microphone for voice input
