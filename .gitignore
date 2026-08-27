@@ -1,0 +1,30 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.log
+
+# Data & temp files
+Frontend/Files/*.data
+Frontend/Files/*.json
+Data/Chatlog.json
+Data/*.jpg
+Data/*.mp4
+Data/frames/
+tempCodeRunnerFile.py
+.vscode/
+
+# Large resources (not code)
+Backend/resources/chromium/
+Backend/resources/agent/agent-framework/
+Backend/resources/agent/browser-use/
+Backend/resources/agent/crewAI/
+Backend/resources/agent/langgraph/
+Backend/resources/agent/mindcraft/
+Backend/resources/agent/smolagents/
+Models/vosk-model-small-en-us-0.15/
+Models/*.tar.gz
+
+# Environment
+.env
+jarvis.env
