@@ -2,6 +2,8 @@
 
 AI desktop assistant with voice control, HUD command-center GUI, and browser automation.
 
+![Screenshot](Screenshot.png)
+
 ## Features
 
 - Voice input (Vosk offline STT)
@@ -10,6 +12,8 @@ AI desktop assistant with voice control, HUD command-center GUI, and browser aut
 - Image & video generation (Pollinations AI)
 - File & system automation
 - Futuristic HUD GUI with animated orb
+- 60+ edge-tts voices
+- Chat memory with history
 
 ## Setup
 
