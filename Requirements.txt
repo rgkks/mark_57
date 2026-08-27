@@ -1,0 +1,13 @@
+python-dotenv
+pyttsx3
+bs4
+pillow
+rich
+requests
+mtranslate
+pygame
+edge-tts
+pyQt5
+psutil
+vosk
+pyaudio
