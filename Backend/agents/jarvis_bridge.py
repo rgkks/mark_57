@@ -18,8 +18,34 @@ def _tool_app(task):
     task = task.lower()
     for word in ("open ", "launch ", "start "):
         if task.startswith(word):
-            r = linux_tools.open_app(task[len(word):])
-            return _R(status="success" if r["ok"] else "failed", output=r.get("message"))
+            app = task[len(word):]
+            r = linux_tools.open_app(app)
+            if r["ok"]:
+                return _R(status="success", output=r.get("message"))
+            import webbrowser
+            sites = {
+                "youtube": "https://youtube.com",
+                "google": "https://google.com",
+                "github": "https://github.com",
+                "gmail": "https://gmail.com",
+                "maps": "https://maps.google.com",
+                "drive": "https://drive.google.com",
+                "chatgpt": "https://chatgpt.com",
+                "twitter": "https://twitter.com",
+                "x": "https://x.com",
+                "instagram": "https://instagram.com",
+                "facebook": "https://facebook.com",
+                "reddit": "https://reddit.com",
+                "netflix": "https://netflix.com",
+                "spotify": "https://open.spotify.com",
+            }
+            url = sites.get(app)
+            if not url and "." in app and " " not in app:
+                url = f"https://{app}" if not app.startswith("http") else app
+            if url:
+                webbrowser.open(url)
+                return _R(status="success", output=f"Opened {app} in browser")
+            return _R(status="failed", output=r.get("message"))
     for word in ("close ", "exit ", "kill "):
         if task.startswith(word):
             r = linux_tools.close_app(task[len(word):])
