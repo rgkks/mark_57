@@ -4,6 +4,7 @@ import json
 import os
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 def log_chat(role, content):
     try:
         path = "Data/Chatlog.json"
@@ -19,12 +20,24 @@ def log_chat(role, content):
             json.dump(history, f, indent=4, ensure_ascii=False)
     except Exception:
         pass
+
+_agents_loaded = False
+AGENTS = {}
+
 def _load_agents():
-    from Backend.agents.router import AgentRegistry
-    registry = AgentRegistry()
-    registry._ensure_adapters()
-    return registry.adapters
-AGENTS = _load_agents()
+    global _agents_loaded, AGENTS
+    if _agents_loaded:
+        return AGENTS
+    try:
+        from Backend.agents.router import AgentRegistry
+        registry = AgentRegistry()
+        registry._ensure_adapters()
+        AGENTS = registry.adapters
+    except Exception:
+        AGENTS = {}
+    _agents_loaded = True
+    return AGENTS
+
 class _AgentProxy:
     def __init__(self, adapter):
         self._adapter = adapter
@@ -36,15 +49,20 @@ class _AgentProxy:
         return self._adapter.execute(task)
     def health(self):
         return self._adapter.health_check() if self._adapter else {"status": "offline"}
+
 def _make_proxies():
-    return {name: _AgentProxy(adapter) for name, adapter in AGENTS.items()}
+    agents = _load_agents()
+    return {name: _AgentProxy(adapter) for name, adapter in agents.items()}
+
 agents = _make_proxies()
 globals().update(agents)
+
 def run_agent(agent_id: str, task: str):
     proxy = agents.get(agent_id)
     if proxy is None:
         raise KeyError(f"unknown agent: {agent_id} (available: {sorted(agents)})")
     return proxy.run(task)
+
 async def Execute(commands):
     from Backend.agents.jarvis_bridge import get_bridge
     bridge = get_bridge()
@@ -62,7 +80,9 @@ async def Execute(commands):
             if res and getattr(res, "errors", None):
                 print(f"  [Agent] {getattr(res, 'agent_id', '?')} failed: {res.errors}", flush=True)
     return True
+
 Automation = Execute
+
 if __name__ == "__main__":
     while True:
         q = input("Command: ")
