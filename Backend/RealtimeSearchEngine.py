@@ -80,7 +80,7 @@ def RealtimeSearchEngine(prompt):
     except (FileNotFoundError, ValueError):
         messages = []
 
-    messages.append({"role": "user", "content": prompt})
+    messages.append({"role": "user", "content": prompt, "timestamp": datetime.datetime.now().isoformat()})
 
     search_result = GoogleSearch(prompt)
     info = Information()
@@ -100,7 +100,7 @@ def RealtimeSearchEngine(prompt):
     )
     answer = result["choices"][0]["message"]["content"]
     answer = answer.replace("</s>", "").strip()
-    messages.append({"role": "assistant", "content": answer})
+    messages.append({"role": "assistant", "content": answer, "timestamp": datetime.datetime.now().isoformat()})
 
     with open("Data/Chatlog.json", "w") as f:
         dump(messages, f, indent=4)

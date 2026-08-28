@@ -3,6 +3,7 @@ import asyncio
 import json
 import os
 import sys
+from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def log_chat(role, content):
@@ -13,7 +14,7 @@ def log_chat(role, content):
                 history = json.load(f)
         else:
             history = []
-        history.append({"role": role, "content": content})
+        history.append({"role": role, "content": content, "timestamp": datetime.now().isoformat()})
         if len(history) > 100:
             history = history[-100:]
         with open(path, "w", encoding="utf-8") as f:

@@ -56,7 +56,7 @@ def LogToChatJson(role, content):
                 history = json.load(f)
         else:
             history = []
-        history.append({"role": role, "content": content})
+        history.append({"role": role, "content": content, "timestamp": datetime.now().isoformat()})
         if len(history) > 100:
             history = history[-100:]
         with open(path, "w", encoding="utf-8") as f:
