@@ -64,6 +64,9 @@ def load_history():
         CHATLOG.write_text("[]")
     with open(CHATLOG, "r", encoding="utf-8") as f:
         history = load(f)
+    for msg in history:
+        if "timestamp" not in msg:
+            msg["timestamp"] = None
     return history[-MAX_HISTORY:]
 def save_history(history):
     history = history[-MAX_HISTORY:]
@@ -79,7 +82,8 @@ def ChatBot(query: str):
     history = load_history()
     history.append({
         "role": "user",
-        "content": query
+        "content": query,
+        "timestamp": datetime.now().isoformat()
     })
     messages = [
         {
@@ -106,7 +110,8 @@ def ChatBot(query: str):
         answer = "I'm experiencing some technical difficulties, sir. Please try again in a moment."
     history.append({
         "role": "assistant",
-        "content": answer
+        "content": answer,
+        "timestamp": datetime.now().isoformat()
     })
     save_history(history)
     return answer
