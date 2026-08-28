@@ -11,6 +11,8 @@ import shutil
 
 _DEFAULTS = {
     "browser": ["firefox", "google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "brave-browser"],
+    "tor browser": ["torbrowser-launcher", "tor", "torbrowser", "tor-browser"],
+    "tor": ["torbrowser-launcher", "tor", "torbrowser", "tor-browser"],
     "terminal": ["gnome-terminal", "konsole", "xfce4-terminal", "xterm"],
     "file_manager": ["nemo", "nautilus", "thunar"],
     "editor": ["code", "gedit", "kate", "xed"],
