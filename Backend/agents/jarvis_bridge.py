@@ -40,6 +40,15 @@ def _tool_app(task):
                 "spotify": "https://open.spotify.com",
             }
             url = sites.get(app)
+            if not url:
+                try:
+                    from Backend.agents.llm import chat
+                    resp = chat([{"role": "user", "content": f"What is the URL for {app}? Reply with ONLY the URL, nothing else."}], max_tokens=100, temperature=0.0)
+                    resp = resp.strip().strip('"').strip("'")
+                    if resp.startswith("http"):
+                        url = resp
+                except Exception:
+                    pass
             if not url and "." in app and " " not in app:
                 url = f"https://{app}" if not app.startswith("http") else app
             if url:
