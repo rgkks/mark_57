@@ -126,7 +126,7 @@ def _load_cache() -> dict | None:
     return None
 
 
-def load_registry() -> dict:
+def load_registry(force=False) -> dict:
     """Load registry: user config + defaults + system scan."""
     user = {}
     try:
@@ -136,7 +136,10 @@ def load_registry() -> dict:
     except Exception:
         pass
 
-    cached = _load_cache()
+    if not force:
+        cached = _load_cache()
+    else:
+        cached = None
     if cached is None:
         cached = _build_cache()
 

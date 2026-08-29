@@ -100,6 +100,11 @@ def InitialExecution():
     SetMicrophoneStatus("False")
     ShowTextToScreen("")
     ShowDefaultChatIfNoChats()
+    try:
+        from Backend.agents.tools.app_registry import load_registry
+        load_registry(force=True)
+    except Exception:
+        pass
 InitialExecution()
 def MainExecution():
     while True:
