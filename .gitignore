@@ -28,3 +28,4 @@ Models/*.tar.gz
 # Environment
 .env
 jarvis.env
+Data/apps_cache.json
