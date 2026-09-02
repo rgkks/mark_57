@@ -95,6 +95,9 @@ def decide(task: str, max_retries: int = 3, model: str = None) -> str:
                 continue
     return ""
 _PRE_ROUTE = [
+    ("remind", "reminder"), ("reminder", "reminder"), ("alarm", "reminder"),
+    ("timer", "reminder"), ("schedule", "reminder"), ("set a reminder", "reminder"),
+    ("list my reminders", "reminder"), ("cancel reminder", "reminder"),
     ("play ", "media"), ("play\t", "media"), ("play some", "media"),
     ("music", "media"), ("song", "media"), ("track", "media"),
     ("pause", "media"), ("resume", "media"), ("next", "media"), ("previous", "media"),

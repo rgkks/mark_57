@@ -12,6 +12,7 @@ CATEGORIES:
 - automation <query>    — open/close apps, play/pause music, files, system tasks, volume, brightness
 - generate image <query> — create images, pictures, art, drawings, wallpapers, logos
 - generate video <query> — create videos, animations, clips
+- reminder <query>      — set reminders, alarms, timers, scheduled notifications
 - exit                  — goodbye, shutdown, quit
 
 RULES:
@@ -20,8 +21,9 @@ RULES:
 3. "automation" for system actions (open apps, play music, file operations, volume, brightness, minecraft).
 4. "generate image" for image/art generation requests.
 5. "generate video" for video/animation generation requests.
-6. "general" for knowledge questions, greetings, explanations, opinions.
-7. "exit" for goodbye/shutdown commands.
+6. "reminder" for setting reminders, alarms, or scheduled notifications.
+7. "general" for knowledge questions, greetings, explanations, opinions.
+8. "exit" for goodbye/shutdown commands.
 
 EXAMPLES:
 "hello" -> "general hello"
@@ -38,6 +40,10 @@ EXAMPLES:
 "draw a sunset" -> "generate image draw a sunset"
 "generate an image of a dragon" -> "generate image of a dragon"
 "make a video of a cat" -> "generate video make a video of a cat"
+"remind me to call mom at 5pm" -> "reminder remind me to call mom at 5pm"
+"set a reminder of class at 8am" -> "reminder set a reminder of class at 8am"
+"set daily reminder for gym at 6am" -> "reminder set daily reminder for gym at 6am"
+"list my reminders" -> "reminder list my reminders"
 "bye" -> "exit"
 """
 CHAT_HISTORY = [
@@ -98,7 +104,7 @@ CHAT_HISTORY = [
         "content": "generate image dragon"
     }
 ]
-VALID_PREFIXES = ("general", "realtime", "generate image", "generate video", "automation", "exit")
+VALID_PREFIXES = ("general", "realtime", "generate image", "generate video", "automation", "reminder", "exit")
 def FirstLayerDMM(prompt: str):
     local = decide(prompt)
     if local is not None:
@@ -138,6 +144,9 @@ def FirstLayerDMM(prompt: str):
         return [local]
     return [f"general {prompt}"]
 AUTOMATION_RULES = [
+    (r"^(remind|reminder|alarm|timer|schedule|set a reminder)\b", "reminder", 8),
+    (r"\b(remind me|set reminder|set a reminder|daily reminder|weekly reminder)\b", "reminder", 7),
+    (r"\b(list|show|cancel|delete|remove)\s+(my\s+)?reminders?\b", "reminder", 6),
     (r"^(open|launch|start|close|kill|restart)\s+\w+", "automation", 6),
     (r"^(play|pause|resume|skip|next|previous|prev|mute)\b", "automation", 8),
     (r"^(search|look up|google|youtube)\b", "automation", 5),
@@ -193,6 +202,8 @@ def decide(query: str) -> str:
     best_cat, best = max(scores.items(), key=lambda kv: kv[1], default=("general", 0))
     if scores.get("exit", 0) >= AUTOMATION_THRESHOLD and best_cat == "exit":
         return "exit"
+    if scores.get("reminder", 0) >= 6:
+        return f"reminder {q}"
     if best >= AUTOMATION_THRESHOLD:
         if best_cat == "realtime":
             return f"realtime {q}"
@@ -202,6 +213,8 @@ def decide(query: str) -> str:
             return f"generate video {_strip_gen(q, ('generate', 'make', 'create'))}"
         if best_cat == "automation":
             return f"automation {q}"
+        if best_cat == "reminder":
+            return f"reminder {q}"
         return f"general {q}"
     return None
 def _strip_gen(q: str, verbs) -> str:

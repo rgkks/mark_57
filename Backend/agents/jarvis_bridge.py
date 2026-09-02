@@ -188,6 +188,16 @@ def _tool_create_file(task):
         return _R(status="success", output=f"Created {path}")
     except Exception as e:
         return _R(status="failed", output=f"Failed to write {path}: {e}")
+def _tool_reminder(task):
+    from Backend.Reminders import add_reminder, list_reminders, cancel_reminder
+    task_lower = task.lower().strip()
+    if any(kw in task_lower for kw in ["list", "show", "my reminders"]):
+        return _R(status="success", output=list_reminders())
+    if any(kw in task_lower for kw in ["cancel", "delete", "remove"]):
+        ok, msg = cancel_reminder(task_lower)
+        return _R(status="success" if ok else "failed", output=msg)
+    ok, msg = add_reminder(task_lower)
+    return _R(status="success" if ok else "failed", output=msg)
 _TOOL_HANDLERS = {
     "app_control": _tool_app,
     "media": _tool_media,
@@ -198,6 +208,7 @@ _TOOL_HANDLERS = {
     "file_manager": _tool_files,
     "file_creator": _tool_create_file,
     "minecraft": _tool_minecraft,
+    "reminder": _tool_reminder,
 }
 class JarvisBridge:
     def __init__(self):
