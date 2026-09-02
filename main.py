@@ -248,8 +248,28 @@ def FirstThread():
         MainExecution()
 def SecondThread():
     GraphicalUserInterface()
+def ReminderThread():
+    from Backend.Reminders import check_reminders, mark_notified
+    from Backend.TextToSpeech import TextToSpeech
+    while True:
+        try:
+            due = check_reminders()
+            for r in due:
+                msg = f"Reminder: {r['message']}"
+                try:
+                    ShowTextToScreen(msg)
+                    SetAssistantStatus("Speaking...")
+                    TextToSpeech(msg)
+                except Exception:
+                    pass
+                mark_notified(r["id"])
+        except Exception:
+            pass
+        time.sleep(30)
 if __name__ == "__main__":
     while True:
         thread2 = threading.Thread(target=FirstThread, daemon=True)
         thread2.start()
+        thread3 = threading.Thread(target=ReminderThread, daemon=True)
+        thread3.start()
         SecondThread()
