@@ -19,6 +19,30 @@ def load_recent_history(max_messages=5):
     except Exception:
         pass
     return []
+
+def resolve_pronouns(query):
+    pronouns = r'\b(it|that|this|them|those|these)\b'
+    if not re.search(pronouns, query, re.IGNORECASE):
+        return query
+    history = load_recent_history(3)
+    if not history:
+        return query
+    last_msg = history[-1].get("content", "")
+    file_match = re.search(r'[\w\-]+\.\w{1,5}', last_msg)
+    if file_match:
+        return re.sub(pronouns, file_match.group(0), query, flags=re.IGNORECASE)
+    words = last_msg.lower().split()
+    skip_words = {"a", "an", "the", "some", "my", "your", "on", "in", "to", "of", "for"}
+    for i, w in enumerate(words):
+        if w.lower() in ("open", "play", "run", "delete", "create", "make", "write", "save", "copy", "move", "download", "upload", "share", "email", "send"):
+            noun = []
+            for j in range(i+1, len(words)):
+                if words[j] in skip_words:
+                    continue
+                noun.append(words[j])
+            if noun:
+                return re.sub(pronouns, " ".join(noun), query, flags=re.IGNORECASE)
+    return query
 SYSTEM_PROMPT = """You are a command classifier. Given a user query, return ONLY the category prefix followed by the cleaned query.
 
 CATEGORIES:
@@ -121,7 +145,8 @@ CHAT_HISTORY = [
 ]
 VALID_PREFIXES = ("general", "realtime", "generate image", "generate video", "automation", "reminder", "exit")
 def FirstLayerDMM(prompt: str):
-    local = decide(prompt)
+    resolved = resolve_pronouns(prompt)
+    local = decide(resolved)
     if local is not None:
         return [local]
     messages = [
@@ -139,7 +164,7 @@ def FirstLayerDMM(prompt: str):
     messages.append(
         {
             "role": "user",
-            "content": prompt
+            "content": resolved
         }
     )
     try:
