@@ -1,9 +1,24 @@
 from rich import print
+import json
+import os
 import re
 try:
     from Backend.PollinationsModel import chat_completion
 except ModuleNotFoundError:
     from PollinationsModel import chat_completion
+
+_CHATLOG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Data", "Chatlog.json")
+
+def load_recent_history(max_messages=5):
+    try:
+        if os.path.exists(_CHATLOG_PATH):
+            with open(_CHATLOG_PATH, "r", encoding="utf-8") as f:
+                history = json.load(f)
+            user_msgs = [m for m in history if m.get("role") == "user" and m.get("content")]
+            return user_msgs[-max_messages:]
+    except Exception:
+        pass
+    return []
 SYSTEM_PROMPT = """You are a command classifier. Given a user query, return ONLY the category prefix followed by the cleaned query.
 
 CATEGORIES:
@@ -115,6 +130,12 @@ def FirstLayerDMM(prompt: str):
             "content": SYSTEM_PROMPT
         },
     ]
+    recent = load_recent_history(5)
+    for msg in recent:
+        messages.append({
+            "role": "user",
+            "content": msg["content"]
+        })
     messages.append(
         {
             "role": "user",
@@ -147,6 +168,7 @@ AUTOMATION_RULES = [
     (r"^(remind|reminder|alarm|timer|schedule|set a reminder)\b", "reminder", 8),
     (r"\b(remind me|set reminder|set a reminder|daily reminder|weekly reminder)\b", "reminder", 7),
     (r"\b(list|show|cancel|delete|remove)\s+(my\s+)?reminders?\b", "reminder", 6),
+    (r"^(cancel|delete|remove)\s+(it|that|this|them)\b", "automation", 5),
     (r"^(open|launch|start|close|kill|restart)\s+\w+", "automation", 6),
     (r"^(play|pause|resume|skip|next|previous|prev|mute)\b", "automation", 8),
     (r"^(search|look up|google|youtube)\b", "automation", 5),
