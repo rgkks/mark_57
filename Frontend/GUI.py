@@ -2001,7 +2001,43 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(top_bar); main_layout.addWidget(stacked)
         self.setCentralWidget(central)
         self.stacked = stacked
+        self._reminder_popup = None
+        self._reminder_timer = QTimer(self)
+        self._reminder_timer.timeout.connect(self._check_reminders)
+        self._reminder_timer.start(30000)
         self._first_boot_events()
+    def _check_reminders(self):
+        try:
+            from Backend.Reminders import check_reminders
+            due = check_reminders()
+            if due:
+                for r in due:
+                    self.show_reminder_popup(r.get("message", "reminder"))
+        except Exception:
+            pass
+    def show_reminder_popup(self, message):
+        if self._reminder_popup:
+            self._reminder_popup.deleteLater()
+        popup = QLabel(f"  Reminder: {message}", self)
+        popup.setStyleSheet("""
+            QLabel {
+                background-color: rgba(0, 170, 255, 200);
+                color: white;
+                font-size: 16px;
+                font-family: 'Consolas', monospace;
+                padding: 15px 30px;
+                border-radius: 10px;
+                border: 2px solid rgba(0, 200, 255, 150);
+            }
+        """)
+        popup.adjustSize()
+        x = (self.width() - popup.width()) // 2
+        popup.move(x, 80)
+        popup.show()
+        QTimer.singleShot(5000, popup.deleteLater)
+        self._reminder_popup = popup
+        if self.feed:
+            self.feed.push("info", f"Reminder: {message}")
     def _first_boot_events(self):
         QTimer.singleShot(1400, lambda: self.feed.push("done", "Command center initialized"))
     @pyqtSlot()
