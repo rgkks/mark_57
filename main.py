@@ -17,6 +17,7 @@ from Backend.TextToSpeech import TextToSpeech
 from dotenv import dotenv_values
 from asyncio import run
 from time import sleep
+import time
 import subprocess
 import threading
 import json
