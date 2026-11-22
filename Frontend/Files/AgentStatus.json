@@ -1,0 +1,39 @@
+{
+  "active_task": "Delete assassin's creed brotherhood from download folder.",
+  "agents": [
+    {
+      "specialist": "file_manager",
+      "state": "COMPLETED",
+      "agent_id": null,
+      "updated": "16:17:07"
+    }
+  ],
+  "events": [],
+  "system": {
+    "cpu_ram": {
+      "ok": true,
+      "cpu_percent": "2.2",
+      "memory": "2.2Gi/3.3Gi"
+    },
+    "disk": {
+      "ok": true,
+      "disk": [
+        "Filesystem      Size  Used Avail Use%",
+        "/dev/nvme0n1p5   73G   68G  1.8G  98%"
+      ]
+    },
+    "network": {
+      "ok": true,
+      "network": [
+        "wlx202351286f35:wifi:connected",
+        "lo:loopback:connected (externally)",
+        "wlo1:wifi:disconnected",
+        "eno1:ethernet:unavailable"
+      ]
+    },
+    "uptime": {
+      "ok": true,
+      "uptime": "up 2 hours, 35 minutes"
+    }
+  }
+}

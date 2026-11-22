@@ -1,0 +1,24 @@
+[
+  {
+    "id": "e88ad2d7a6a2",
+    "ts": "2026-08-23T20:43:43",
+    "type": "agent",
+    "task_id": "77f7c4d3d477",
+    "agent_id": "smolagents",
+    "framework": "smolagents",
+    "model": "kilo.ai",
+    "phase": "route",
+    "specialist": "other specialists"
+  },
+  {
+    "id": "af5b603f3dc7",
+    "ts": "2026-08-23T20:43:43",
+    "type": "agent",
+    "task_id": "77f7c4d3d477",
+    "agent_id": "smolagents",
+    "framework": "smolagents",
+    "model": "smolagents/code",
+    "phase": "start",
+    "task": ""
+  }
+]
