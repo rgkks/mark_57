@@ -5,3 +5,8 @@ Backend/resources/agent/browser-use/
 Backend/resources/agent/langgraph/
 Backend/resources/agent/mindcraft/
 Backend/resources/agent/smolagents/
+__pycache__/
+*.py[cod]
+tempCodeRunnerFile.py
+.venv/
+venv/
