@@ -11,3 +11,4 @@ pyQt5
 psutil
 vosk
 pyaudio
+dotenv
